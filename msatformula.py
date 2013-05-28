@@ -15,7 +15,7 @@ class MSatFormula:
 
     #
     #
-    def getHardClausesFormula():
+    def getHardClausesFormula(self):
         """
         getHardClausesFormula(): (nvars: int, clauses: [])
 
@@ -30,7 +30,7 @@ class MSatFormula:
 
     #
     #
-    def getFormulaWithMinWeight( min_weight ):
+    def getFormulaWithMinWeight( self, min_weight ):
         """
         getFormulaWithMinWeight(min_weight: int): (nvars: int, clauses: [])
 
@@ -45,18 +45,18 @@ class MSatFormula:
 
     #
     #
-    def maxWeightLessThan( upper_bound ):
+    def maxWeightLessThan( self, upper_bound ):
         """
         maxWeightLessThan(upper_bound:int): int 
 
-        Returns the max weight, less than the specified upper bound.
+        Returns the max weight in the formula, less than the specified upper bound.
         """
         raise NotImplementedError(
             'maxWeightLessThan( upper_bound ). Abstract method')
 
     #
     #
-    def minWeightOfClauses( clauses ):
+    def minWeightOfClauses( self, clauses ):
         """
         minWeightOfClauses(clauses: []/set): int
 
@@ -71,7 +71,7 @@ class MSatFormula:
 
     #
     #
-    def relaxClause( clause, weight ):
+    def relaxClause( self, clause, weight ):
         """
         relaxClause(clause: set, weight: int): int
 
@@ -80,13 +80,15 @@ class MSatFormula:
         weight minus the new weight.
 
         Returns the new variable added to the copy.
+
+        Raises LookupError: If the specified clause doesn't belong to the formula
         """
         raise NotImplementedError(
             'relaxClause( clause, weight ). Abstract method')
 
     #
     #
-    def addCardinalityConstraint( literals, cctype, weight ):
+    def addCardinalityConstraint( self, literals, cctype, weight ):
         """
         addCardinalityConstraint(literals: set, cctype: int, weight: int)
 
@@ -105,7 +107,7 @@ class MSatFormula:
 
     #
     #
-    def isHardClause( clause ):
+    def isHardClause( self, clause ):
         """
         isHardClause(clause: set): bool
 

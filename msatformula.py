@@ -1,0 +1,117 @@
+# -*- coding: utf-8 -*-
+
+
+#
+#
+class MSatFormula:
+    """
+    Stores all the necessary information of a Weighted SAT Formula
+
+    Clauses must be represented as sets or frozensets
+    """
+
+    INFINITY = -1
+    EXACTLY_ONE = -2
+
+    #
+    #
+    def getHardClausesFormula():
+        """
+        getHardClausesFormula(): (nvars: int, clauses: [])
+
+        Returns a tuple with 2 components:
+            - nvars: At least the value of the highest variable or greater
+
+            - clauses: A list filled with the hard clauses (without weights)
+                f.e: [ set([1,2,-4,5]), set([1,5,-7,8]) ] 
+        """
+        raise NotImplementedError(
+            'getHardClausesFormula(). Abstract method')
+
+    #
+    #
+    def getFormulaWithMinWeight( min_weight ):
+        """
+        getFormulaWithMinWeight(min_weight: int): (nvars: int, clauses: [])
+
+        Returns a tuple with 2 components:
+            - nvars: At least the value of the highest variable or greater
+
+            - clauses: A list filled with all the clauses with weight equals or
+                greater than min_weight
+        """
+        raise NotImplementedError(
+            'getFormulaWithMinWeight( min_weight ). Abstract method')
+
+    #
+    #
+    def maxWeightLessThan( upper_bound ):
+        """
+        maxWeightLessThan(upper_bound:int): int 
+
+        Returns the max weight, less than the specified upper bound.
+        """
+        raise NotImplementedError(
+            'maxWeightLessThan( upper_bound ). Abstract method')
+
+    #
+    #
+    def minWeightOfClauses( clauses ):
+        """
+        minWeightOfClauses(clauses: []/set): int
+
+        Returns the minimum weight of the specified clauses.
+
+        Raises:
+            - LookupError: If clauses contains a clause that doesn't belongs to
+                            the formula
+        """
+        raise NotImplementedError(
+            'minWeightOfClauses( clauses ). Abstract method')
+
+    #
+    #
+    def relaxClause( clause, weight ):
+        """
+        relaxClause(clause: set, weight: int): int
+
+        Duplicates the given clause adding a new variable to the copy. The new
+        clause will have the specified weight and the old one will have its old
+        weight minus the new weight.
+
+        Returns the new variable added to the copy.
+        """
+        raise NotImplementedError(
+            'relaxClause( clause, weight ). Abstract method')
+
+    #
+    #
+    def addCardinalityConstraint( literals, cctype, weight ):
+        """
+        addCardinalityConstraint(literals: set, cctype: int, weight: int)
+
+        Add the specified cardinality constraint 'cctype' to the given literals
+        with the specified weight.
+
+        - cctype: Must be one of the next MSatFormula 'constants'
+            - MSatFormula.EXACTLY_ONE
+            - ...
+
+        - weight: Must be an integer greater than 0 or MSatFormula.INFINITY
+        """
+        raise NotImplementedError(
+            'addCardinalityConstraint( literals, cctype, weight ). '
+            'Abstract method')
+
+    #
+    #
+    def isHardClause( clause ):
+        """
+        isHardClause(clause: set): bool
+
+        Returns True if the specified clause is a hard clause. False otherwise.
+        """
+        raise NotImplementedError(
+            'isHardClause( upper_bound ). Abstract method')
+
+    

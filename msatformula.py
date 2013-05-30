@@ -12,6 +12,8 @@ class MSatFormula:
 
     INFINITY = -1
     EXACTLY_ONE = -2
+    AT_MOST_ONE = -3
+    AT_LEAST_ONE = -4
 
     #
     #
@@ -50,6 +52,9 @@ class MSatFormula:
         maxWeightLessThan(upper_bound:int): int 
 
         Returns the max weight in the formula, less than the specified upper bound.
+
+        Raises:
+            - TODO
         """
         raise NotImplementedError(
             'maxWeightLessThan( upper_bound ). Abstract method')
@@ -100,6 +105,8 @@ class MSatFormula:
             - ...
 
         - weight: Must be an integer greater than 0 or MSatFormula.INFINITY
+
+        Raises 
         """
         raise NotImplementedError(
             'addCardinalityConstraint( literals, cctype, weight ). '

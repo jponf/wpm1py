@@ -1,6 +1,8 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import msatformula
+import sys
 
 #
 #
@@ -8,7 +10,7 @@ class Formula(msatformula.MSatFormula):
 
     #
     #
-    def __init__( self, num_variables, clauses ):
+    def __init__( self, num_variables, inf, clauses ):
         """
         Initialize a new formula
 
@@ -20,8 +22,9 @@ class Formula(msatformula.MSatFormula):
         self.soft_clauses = set()
         self.weights = set()
         self.clauses_weights = {}
+        self.inf = inf
 
-        self.nvars = nvars
+        self.nvars = num_variables
         for w, c in clauses:
             self.__addClause(c, w)
 
@@ -29,7 +32,7 @@ class Formula(msatformula.MSatFormula):
     #
     #
     def getHardClausesFormula( self ):
-        return (self.nvars, self.hard_clauses)
+        return (self.nvars, set(self.hard_clauses))
 
     #
     #
@@ -111,7 +114,7 @@ class Formula(msatformula.MSatFormula):
         elif cctype == msatformula.MSatFormula.AT_LEAST_ONE:
             self.__addAtLeastOneConstraint(literals, weight)
         else:
-            raise AttributeError('Unknown cctype value: %s' str(cctype))
+            raise AttributeError('Unknown cctype value: %s' % str(cctype))
 
 
     #
@@ -137,9 +140,14 @@ class Formula(msatformula.MSatFormula):
     #
     def __setClauseWeight( self, clause, weight):
 
-        self.weight.add(weight)
+        if weight > self.inf:
+            weight = self.inf
+            sys.stderr.write('WARNING: Clause with weight above infinity: '
+                             '%s' % str(clause) )
+
+        self.weights.add(weight)
         if self.clauses_weights.has_key(clause):
-            self.clauses_weights[clauses] += weight
+            self.clauses_weights[clause] += weight
         else:
             self.clauses_weights[clause] = weight
 
@@ -172,4 +180,4 @@ class Formula(msatformula.MSatFormula):
     #
     def __newVariable(self):
         self.nvars += 1
-        return self.nvars
+        return self.nvars   

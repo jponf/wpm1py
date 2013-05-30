@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 #
 #
 class MSatFormula:
@@ -19,12 +18,13 @@ class MSatFormula:
     #
     def getHardClausesFormula(self):
         """
-        getHardClausesFormula(): (nvars: int, clauses: [])
+        getHardClausesFormula(): (nvars: int, clauses: []/set/...)
 
         Returns a tuple with 2 components:
             - nvars: At least the value of the highest variable or greater
 
-            - clauses: A list filled with the hard clauses (without weights)
+            - clauses: An iterable taht must return a hard clauses one on each
+                        iteration (without weights)
                 f.e: [ set([1,2,-4,5]), set([1,5,-7,8]) ] 
         """
         raise NotImplementedError(

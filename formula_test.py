@@ -24,13 +24,20 @@ class TestFormula(unittest.TestCase):
         self.formula = formula.Formula( self.num_vars, self.inf, self.clauses )
 
     #
-    #   Test if we can retrieve the hard clauses as an iterable set
+    #   Tests if we can retrieve the hard clauses as an iterable set
     #
     def test_getHardClausesFormula( self ):
         hclauses = set( [frozenset([1, -2, -3]), frozenset([-3, -1, -2])] )
         expected = (self.num_vars, hclauses)
         self.assertEqual(expected, self.formula.getHardClausesFormula())
 
+    #
+    #   Test if we can retrieve a formula filled with clauses which weight is
+    #   equals or bigger than a given value
+    #
+    def test_getFormulaWithMinWeight( self ):
+        # TODO
+        pass
 
 #
 #

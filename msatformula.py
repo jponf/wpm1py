@@ -6,7 +6,7 @@ class MSatFormula:
     """
     Stores all the necessary information of a Weighted SAT Formula
 
-    Clauses must be represented as sets or frozensets
+    Clauses must be represented frozensets
     """
 
     INFINITY = -1
@@ -23,9 +23,8 @@ class MSatFormula:
         Returns a tuple with 2 components:
             - nvars: At least the value of the highest variable or greater
 
-            - clauses: An iterable taht must return a hard clauses one on each
-                        iteration (without weights)
-                f.e: [ set([1,2,-4,5]), set([1,5,-7,8]) ] 
+            - clauses: A set filled with all the hardclauses
+                f.e: set([ set([1,2,-4,5]), set([1,5,-7,8]) )
         """
         raise NotImplementedError(
             'getHardClausesFormula(). Abstract method')
@@ -39,7 +38,7 @@ class MSatFormula:
         Returns a tuple with 2 components:
             - nvars: At least the value of the highest variable or greater
 
-            - clauses: A list filled with all the clauses with weight equals or
+            - clauses: A set filled with all the clauses with weight equals or
                 greater than min_weight
         """
         raise NotImplementedError(
@@ -47,7 +46,7 @@ class MSatFormula:
 
     #
     #
-    def maxWeightLessThan( self, upper_bound ):
+    def getMaxWeightLessThan( self, upper_bound ):
         """
         maxWeightLessThan(upper_bound:int): int 
 
@@ -61,7 +60,7 @@ class MSatFormula:
 
     #
     #
-    def minWeightOfClauses( self, clauses ):
+    def getMinWeightOfClauses( self, clauses ):
         """
         minWeightOfClauses(clauses: []/set): int
 

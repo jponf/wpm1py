@@ -20,7 +20,6 @@ class Formula(msatformula.MSatFormula):
         """
         self.hard_clauses = set()
         self.soft_clauses = set()
-        self.weights = set()
         self.clauses_weights = {}
         self.inf = inf
 
@@ -30,46 +29,47 @@ class Formula(msatformula.MSatFormula):
 
 
     #
-    #
+    # Override
     def getHardClausesFormula( self ):
         return (self.nvars, set(self.hard_clauses))
 
     #
-    #
+    # Override
     def getFormulaWithMinWeight( self, min_weight ):
         if min_weight > self.inf:
             return []
 
-        rf = list(self.hard_clauses)
-        rf.extend( [c for c in self.soft_clauses 
+        rf = set(self.hard_clauses)
+        rf.update( [c for c in self.soft_clauses 
                         if self.clauses_weights[c] >= min_weight] )
 
         return (self.nvars, rf)
 
 
     #
-    #
-    def maxWeightLessThan( self, upper_bound ):
+    # Override
+    def getMaxWeightLessThan( self, upper_bound ):
         if upper_bound <= 0:
             raise Exception('upper_bound can not be 0 or negative')
 
         # First dummy implementation
         w = 0
 
-        for cw in self.weights:
+        for k, cw in self.clauses_weights.iteritems():
             if cw < upper_bound and cw > w:
                 w = cw
 
         return w
 
     #
-    #
-    def minWeightOfClauses( self, clauses ):
+    # Override
+    def getMinWeightOfClauses( self, clauses ):
 
         wmin = self.inf
         clause = None
 
         for clause in clauses:
+
             try:
                 cw = self.clauses_weights[clause]
                 if cw < wmin:
@@ -80,11 +80,8 @@ class Formula(msatformula.MSatFormula):
         return wmin
 
     #
-    #
+    # Override
     def relaxClause( self, clause, weight ):
-
-        if type(clause) != frozenset:
-            clause = frozenset(clause)
 
         if clause not in self.soft_clauses:
             raise LookupError('Clause %s do not belong to the formula' % str(clause))
@@ -96,12 +93,11 @@ class Formula(msatformula.MSatFormula):
         self.clauses_weights[clause] -= weight
         self.clauses_weights[rclause] = weight
         self.soft_clauses.add(rclause)
-        self.weights.add(weight)
 
         return nvar
 
     #
-    #
+    # Override
     def addCardinalityConstraint( self, literals, cctype, weight ):
 
         if weight == msatformula.MSatFormula.INFINITY:
@@ -118,38 +114,33 @@ class Formula(msatformula.MSatFormula):
 
 
     #
-    #
+    # Override
     def isHardClause( self, clause ):
         return clause in self.hard_clauses
 
     #
     #
     def __addClause( self, clause, weight):
-
+        # Repeated clauses can have greater value than inf
         if type(clause) != frozenset:
             clause = frozenset(clause) # Dictionaries need it
 
-        if weight >= self.inf:
-            self.hard_clauses.add(clause)
-        else:
-            self.soft_clauses.add(clause)
+        # If the clause is hard leave it as is
+        if clause not in self.hard_clauses:
+            # Restrict values to be at most inf
+            w = min(self.clauses_weights.get(clause, 0) + weight, self.inf)
 
-        self.__setClauseWeight( clause, weight )
+            if clause in self.soft_clauses:
+                if w == self.inf:
+                    self.hard_clauses.add(clause)
+                    self.soft_clauses.remove(clause)
+            else:
+                if w == self.inf:
+                    self.hard_clauses.add(clause)
+                else:
+                    self.soft_clauses.add(clause)
 
-    #
-    #
-    def __setClauseWeight( self, clause, weight):
-
-        if weight > self.inf:
-            weight = self.inf
-            sys.stderr.write('WARNING: Clause with weight above infinity: '
-                             '%s' % str(clause) )
-
-        self.weights.add(weight)
-        if self.clauses_weights.has_key(clause):
-            self.clauses_weights[clause] += weight
-        else:
-            self.clauses_weights[clause] = weight
+            self.clauses_weights[clause] = w
 
     #
     #

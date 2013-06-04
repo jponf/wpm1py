@@ -41,10 +41,10 @@ class WPM1:
             if wmax == 0 and sat:
                 return (cost, sout)
             elif sat:
-                wmax = self.formula.maxWeightLessThan(wmax)
+                wmax = self.formula.getMaxWeightLessThan(wmax)
             else:
                 blocking_vars = []
-                wmin = self.formula.minWeightOfClauses(sout)
+                wmin = self.formula.getMinWeightOfClauses(sout)
 
                 for c in sout:
                     if not self.formula.isHardClause(c):

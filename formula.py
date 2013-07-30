@@ -37,7 +37,7 @@ class Formula(msatformula.MSatFormula):
     # Override
     def getFormulaWithMinWeight( self, min_weight ):
         if min_weight > self.inf:
-            return []
+            return set()
 
         rf = set(self.hard_clauses)
         rf.update( [c for c in self.soft_clauses 

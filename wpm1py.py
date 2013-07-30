@@ -8,6 +8,8 @@ __author__ = 'Josep Pon Farreny <jpf2@alumnes.udl.cat>'
 __version__ = '0.1a'
 __licence__ = 'GPL'
 
+
+
 def main():
     parser = argparse.ArgumentParser(
                             description='Educational implementation of WPM1')

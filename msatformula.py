@@ -18,7 +18,7 @@ class MSatFormula:
     #
     def getHardClausesFormula(self):
         """
-        getHardClausesFormula(): (nvars: int, clauses: []/set/...)
+        getHardClausesFormula(): (nvars: int, clauses: set)
 
         Returns a tuple with 2 components:
             - nvars: At least the value of the highest variable or greater
@@ -33,7 +33,7 @@ class MSatFormula:
     #
     def getFormulaWithMinWeight( self, min_weight ):
         """
-        getFormulaWithMinWeight(min_weight: int): (nvars: int, clauses: [])
+        getFormulaWithMinWeight(min_weight: int): (nvars: int, clauses: set)
 
         Returns a tuple with 2 components:
             - nvars: At least the value of the highest variable or greater

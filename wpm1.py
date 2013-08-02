@@ -14,7 +14,7 @@ class WPM1:
 
     #
     #
-    def solve():
+    def solve(self):
         """
         solve(): (cost:int, assignation/core: [])
 

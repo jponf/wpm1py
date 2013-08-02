@@ -25,8 +25,12 @@ class SATSolver:
             The first component indicates if the formula is satisfiable(True) or
             unsatisfiable(False).
 
-            The second component depens on the first one:
+            The second component depends on the first one:
                 True: Truth assignation that satisfies the formula as an iterable
                 False: Core clauses as an iterable of iterables
+
+                F.E:
+                    - If True -> [1,-2,3]
+                    - If False -> [[1,2], [-1,2], [1,-2], [-1,-2]]
         """
         raise NotImplementedError('solve( num_vars, formula ). Abstract method')

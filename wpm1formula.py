@@ -49,6 +49,9 @@ class Formula(msatformula.MSatFormula):
     #
     # Override
     def getMaxWeightLessThan( self, upper_bound ):
+        if upper_bound == msatformula.MSatFormula.INFINITY:
+            upper_bound = self.inf
+
         if upper_bound <= 0:
             raise Exception('upper_bound can not be 0 or negative')
 
@@ -89,6 +92,7 @@ class Formula(msatformula.MSatFormula):
         nvar = self.__newVariable()
         rclause = set(clause)
         rclause.add(nvar)
+        rclause = frozenset(rclause)
 
         self.clauses_weights[clause] -= weight
         self.clauses_weights[rclause] = weight

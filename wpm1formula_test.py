@@ -2,7 +2,7 @@
 
 import sys
 import unittest
-import formula
+import wpm1formula
 
 class TestFormula(unittest.TestCase):
 

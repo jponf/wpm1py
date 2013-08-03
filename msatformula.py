@@ -38,7 +38,7 @@ class MSatFormula:
         Returns a tuple with 2 components:
             - nvars: At least the value of the highest variable or greater
 
-            - clauses: A set filled with all the clauses with weight equals or
+            - clauses: A set filled with all the clauses with weight is equals or
                 greater than min_weight
         """
         raise NotImplementedError(
@@ -50,10 +50,12 @@ class MSatFormula:
         """
         maxWeightLessThan(upper_bound:int): int 
 
+            - upper_bound: must be a possitive integer > 0 or MSatFormula.INFINITY
+
         Returns the max weight in the formula, less than the specified upper bound.
 
         Raises:
-            - TODO
+            - ValueError if upper_bound is 0 or negative
         """
         raise NotImplementedError(
             'maxWeightLessThan( upper_bound ). Abstract method')

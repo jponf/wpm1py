@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import solver
+import satsolver
 import sys, os, errno, platform
 
 
 #
 #
-class Picosat(solver.SATSolver):
+class Picosat(satsolver.SATSolver):
     """
     Solves SAT formulas by using Picosat as the underlying sat solver
     """
@@ -45,7 +45,7 @@ class Picosat(solver.SATSolver):
 
         # Delete files to avoid possible problems due to unfinished operations
         # caused by: unhandled exceptions, etc
-        
+        self.__delTempFiles()
 
         return sat, proof_or_core
     
@@ -80,9 +80,7 @@ class Picosat(solver.SATSolver):
     #
     #   Check if solver output contains the s SATISFIABLE message
     def __checkSatisfiability(self):
-        """
 
-        """
         try:
 
             f = open(Picosat.OUTPUT_FILE_NAME, 'r')
@@ -175,14 +173,14 @@ class Picosat(solver.SATSolver):
             if architecture == '64bit':
                 self.solver_bin = 'binutils/picosat_linux_x64'
             else:
-                raise EnvironmentError('There is not a picosat build for linux i386')
+                raise EnvironmentError('There is no binary file for linux i386')
         elif system == 'Darwin':
             if architecture == '64bit':
                 self.solver_bin = 'binutils/picosat_osx_intel64'
             else:
-                raise EnvironmentError('There is not a picosat build for Darwin i386')
+                raise EnvironmentError('There is no binary file for Darwin i386')
         else:
-            raise EnvironmentError('There is not a picosat build for %s' %
+            raise EnvironmentError('There is no binary file for %s' %
                                     (system) )
 
         # Check if is executable

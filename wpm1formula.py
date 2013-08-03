@@ -78,7 +78,8 @@ class Formula(msatformula.MSatFormula):
                 if cw < wmin:
                     wmin = cw
             except:
-                raise LookupError('Clause %s do not belong to the formula' % str(clause))
+                raise LookupError('Clause %s do not belong to the formula' % 
+                                                                    str(clause))
 
         return wmin
 
@@ -87,7 +88,8 @@ class Formula(msatformula.MSatFormula):
     def relaxClause( self, clause, weight ):
 
         if clause not in self.soft_clauses:
-            raise LookupError('Clause %s do not belong to the formula' % str(clause))
+            raise LookupError('Clause %s do not belong to the formula' % 
+                                                                    str(clause))
 
         nvar = self.__newVariable()
         rclause = set(clause)

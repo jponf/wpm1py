@@ -15,9 +15,9 @@ class SATSolver:
         to solve it, then return the result in an specific format
 
         Input:
-            - num_vars: Number of the 
+            - num_vars: Number of variables in the formula (Can be greater)
 
-            - formula: Could be any iterable data structure filled with clauses
+            - formula: Can be any iterable data structure filled with clauses
 
         Output:
             A tuple (bool, set/[])

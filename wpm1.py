@@ -47,10 +47,11 @@ class WPM1:
                 wmin = self.formula.getMinWeightOfClauses(sout)
 
                 for c in sout:
+                    
                     if not self.formula.isHardClause(c):
                         b = self.formula.relaxClause(c, wmin)
                         blocking_vars.append(b)
-
+   
                 self.formula.addCardinalityConstraint(blocking_vars,
                                                     MSatFormula.EXACTLY_ONE, 
                                                     MSatFormula.INFINITY )

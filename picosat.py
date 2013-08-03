@@ -12,8 +12,8 @@ class Picosat(solver.SATSolver):
     """
 
     # Change this variables to use another picosat version
-    #SOLVER_BIN = 'binutils/picosat_linux_x64'
-    SOLVER_BIN = 'binutils/picosat_osx_intel64'   
+    SOLVER_BIN = 'binutils/picosat_linux_x64'
+    #SOLVER_BIN = 'binutils/picosat_osx_intel64'   
     FORMULA_FILE_NAME = 'binutils/formula.picosat.cnf'
     OUTPUT_FILE_NAME = 'binutils/out.picosat.cnf'
     CORE_FILE_NAME = 'binutils/core.picosat.cnf'

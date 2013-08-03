@@ -36,12 +36,38 @@ def main():
         wpm1 = WPM1(formula, picosat)
 
         cost, proof = wpm1.solve()
-        print 'Final cost:', cost
-        print 'Proof', proof
+       
+        printResult(cost, proof)
+
 
     except Exception as e:
         traceback.print_exc()
         sys.stderr.write( '{0}: {1}\n'.format(e.__class__.__name__, str(e)) )
+
+#
+#
+def printResult(cost, proof):
+
+    if cost >= 0:
+        print 'o', cost
+        print 's OPTIMUM FOUND'
+
+        print 'v',
+        for lit in sorted(proof, key=abs):
+            print lit,
+        print 
+
+    else:
+
+        print 's UNSATISFIABLE'        
+        print 'c Core Clauses'
+
+        for clause in proof:
+            print 'c',
+            for lit in clause:
+                print lit,
+            print '0'
+
 
 # Program entry point, calls immediatly the main routine
 if __name__ == '__main__':

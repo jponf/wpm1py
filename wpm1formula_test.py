@@ -21,7 +21,8 @@ class TestFormula(unittest.TestCase):
     #   Sets up the formula, before any test
     #
     def setUp(self):
-        self.formula = formula.Formula( self.num_vars, self.inf, self.clauses )
+        self.formula = wpm1formula.Formula( self.num_vars, self.inf, 
+                                                                self.clauses )
 
     #
     #   Tests if we can retrieve the hard clauses as an iterable set

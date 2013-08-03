@@ -32,7 +32,7 @@ class WPM1:
         if not sat: return (-1, core)
 
         cost = 0
-        wmax = self.formula.getMaxWeightLessThan( MSatFormula.INFINITY )
+        wmax = self.formula.getMaxWeightLessThan( MSatFormula.TOP )
 
         while True:
             nvars, formula = self.formula.getFormulaWithMinWeight(wmax)
@@ -54,5 +54,5 @@ class WPM1:
    
                 self.formula.addCardinalityConstraint(blocking_vars,
                                                     MSatFormula.EXACTLY_ONE, 
-                                                    MSatFormula.INFINITY )
+                                                    MSatFormula.TOP )
                 cost += wmin

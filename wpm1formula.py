@@ -10,7 +10,7 @@ class Formula(msatformula.MSatFormula):
 
     #
     #
-    def __init__( self, num_variables, inf, clauses ):
+    def __init__( self, num_variables, top, clauses ):
         """
         Initialize a new formula
 
@@ -21,11 +21,11 @@ class Formula(msatformula.MSatFormula):
         self.hard_clauses = set()
         self.soft_clauses = set()
         self.clauses_weights = {}
-        self.inf = inf
+        self.top = top
 
         self.nvars = num_variables
         for w, c in clauses:
-            self.__addClause(c, w)
+            self.__addClause(w, c)
 
 
     #
@@ -36,7 +36,7 @@ class Formula(msatformula.MSatFormula):
     #
     # Override
     def getFormulaWithMinWeight( self, min_weight ):
-        if min_weight > self.inf:
+        if min_weight > self.top:
             return set()
 
         rf = set(self.hard_clauses)
@@ -49,8 +49,8 @@ class Formula(msatformula.MSatFormula):
     #
     # Override
     def getMaxWeightLessThan( self, upper_bound ):
-        if upper_bound == msatformula.MSatFormula.INFINITY:
-            upper_bound = self.inf
+        if upper_bound == msatformula.MSatFormula.TOP:
+            upper_bound = self.top
 
         if upper_bound <= 0:
             raise Exception('upper_bound can not be 0 or negative')
@@ -68,7 +68,7 @@ class Formula(msatformula.MSatFormula):
     # Override
     def getMinWeightOfClauses( self, clauses ):
 
-        wmin = self.inf
+        wmin = self.top
         clause = None
 
         for clause in clauses:
@@ -114,8 +114,8 @@ class Formula(msatformula.MSatFormula):
     # Override
     def addCardinalityConstraint( self, literals, cctype, weight ):
 
-        if weight == msatformula.MSatFormula.INFINITY:
-            weight = self.inf
+        if weight == msatformula.MSatFormula.TOP:
+            weight = self.top
 
         if cctype == msatformula.MSatFormula.EXACTLY_ONE:
             self.__addExcatlyOneConstraint(literals, weight)
@@ -134,22 +134,22 @@ class Formula(msatformula.MSatFormula):
 
     #
     #
-    def __addClause( self, clause, weight):
-        # Repeated clauses can have greater value than inf
+    def __addClause( self, weight, clause):
+        # Repeated clauses can have greater value than top
         if type(clause) != frozenset:
             clause = frozenset(clause) # Dictionaries need it
 
         # If the clause is hard leave it as is
         if clause not in self.hard_clauses:
-            # Restrict values to be at most inf
-            w = min(self.clauses_weights.get(clause, 0) + weight, self.inf)
+            # Restrict values to be at most top
+            w = min(self.clauses_weights.get(clause, 0) + weight, self.top)
 
             if clause in self.soft_clauses:
-                if w == self.inf:
+                if w == self.top:
                     self.hard_clauses.add(clause)
                     self.soft_clauses.remove(clause)
             else:
-                if w == self.inf:
+                if w == self.top:
                     self.hard_clauses.add(clause)
                 else:
                     self.soft_clauses.add(clause)
@@ -166,7 +166,7 @@ class Formula(msatformula.MSatFormula):
     #
     def __addAtLeastOneConstraint(self, literals, weight):
         clause = frozenset(literals)
-        self.__addClause( clause, weight )
+        self.__addClause( weight, clause )
 
     #
     #
@@ -179,7 +179,7 @@ class Formula(msatformula.MSatFormula):
         for i in xrange( len(literals)-1 ):
             for j in xrange(i+1, len(literals) ):
                 clause = frozenset( (-literals[i], -literals[j]) )  
-                self.__addClause(clause, weight)
+                self.__addClause( weight, clause )
 
     #
     #

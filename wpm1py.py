@@ -5,9 +5,9 @@ import sys, argparse, traceback
 
 import wpm1formula
 import wcnfparser
+import picosat
+import wpm1
 
-from wpm1 import WPM1
-from picosat import Picosat
 
 __program__='WPM1PY'
 __author__ = 'Josep Pon Farreny <jpf2@alumnes.udl.cat>'
@@ -18,27 +18,18 @@ __licence__ = 'GPL'
 #
 #
 def main():
-    parser = argparse.ArgumentParser(
-                            description='Educational implementation of WPM1')
-
-    parser.add_argument('-f', '--file', action='store', default="",
-                    required=True, help='Path to a wcnf file')
-
-    options = parser.parse_args()
+    global options
 
     try:
-        num_vars, inf, clauses = wcnfparser.parse(options.file)
+        parser = wcnfparser.WCNFParser(options.file)
+        solver = picosat.PicoSAT()
 
-        formula = wpm1formula.Formula(num_vars, inf, clauses)
-
-        # Create algorithm and sat solver
-        picosat = Picosat()
-        wpm1 = WPM1(formula, picosat)
-
-        cost, proof = wpm1.solve()
-       
+        num_vars, top, clauses = parser.parse()
+        formula = wpm1formula.Formula(num_vars, top, clauses)
+        
+        algorithm = wpm1.WPM1(formula, solver)
+        cost, proof = algorithm.solve()       
         printResult(cost, proof)
-
 
     except Exception as e:
         traceback.print_exc()
@@ -71,4 +62,13 @@ def printResult(cost, proof):
 
 # Program entry point, calls immediatly the main routine
 if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser(
+                            description='Educational implementation of WPM1')
+
+    parser.add_argument('-f', '--file', action='store', default="",
+                    required=True, help='Path to a wcnf file')
+
+    options = parser.parse_args()
+
     main()

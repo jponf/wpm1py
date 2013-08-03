@@ -9,7 +9,7 @@ class MSatFormula:
     Clauses must be represented frozensets
     """
 
-    INFINITY = -1
+    TOP = -1
     EXACTLY_ONE = -2
     AT_MOST_ONE = -3
     AT_LEAST_ONE = -4
@@ -50,7 +50,7 @@ class MSatFormula:
         """
         maxWeightLessThan(upper_bound:int): int 
 
-            - upper_bound: must be a possitive integer > 0 or MSatFormula.INFINITY
+            - upper_bound: must be a possitive integer > 0 or MSatFormula.TOP
 
         Returns the max weight in the formula, less than the specified upper bound.
 
@@ -105,7 +105,7 @@ class MSatFormula:
             - MSatFormula.EXACTLY_ONE
             - ...
 
-        - weight: Must be an integer greater than 0 or MSatFormula.INFINITY
+        - weight: Must be an integer greater than 0 or MSatFormula.TOP
 
         Raises 
         """

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import solver
-import sys, os, errno
+import sys, os, errno, platform
 
 
 #
@@ -11,12 +11,17 @@ class Picosat(solver.SATSolver):
     Solves SAT formulas by using Picosat as the underlying sat solver
     """
 
-    # Change this variables to use another picosat version
-    SOLVER_BIN = 'binutils/picosat_linux_x64'
-    #SOLVER_BIN = 'binutils/picosat_osx_intel64'   
     FORMULA_FILE_NAME = 'binutils/formula.picosat.cnf'
     OUTPUT_FILE_NAME = 'binutils/out.picosat.cnf'
     CORE_FILE_NAME = 'binutils/core.picosat.cnf'
+
+    #
+    #
+    def __init__(self):
+        """
+        Initialize a new Picosat instance
+        """
+        self.__setSolverBinary()
 
     #
     #
@@ -27,7 +32,7 @@ class Picosat(solver.SATSolver):
 
         # Write formula to file and execute solver
         self.__writeFormula(num_vars, formula)
-        os.system('%s -c %s %s > %s' % (Picosat.SOLVER_BIN, 
+        os.system('%s -c %s %s > %s' % (self.solver_bin, 
                                         Picosat.CORE_FILE_NAME,
                                         Picosat.FORMULA_FILE_NAME,
                                         Picosat.OUTPUT_FILE_NAME))
@@ -65,7 +70,8 @@ class Picosat(solver.SATSolver):
                 print >>ff, '0'
 
         except IOError as e:
-            sys.stderr.write("__writeFormula(...): I/O Error({0}) {1}\n".format(
+            sys.stderr.write(
+                "[Picosat] __writeFormula(...): I/O Error({0}) {1}\n".format(
                                                         e.errno, e.strerror))
             raise e
         finally:
@@ -87,8 +93,9 @@ class Picosat(solver.SATSolver):
             return False
 
         except IOError as e:
-            sys.stderr.write("__checkSatisfiability(): I/O Error({0}) {1}\n"\
-                                .format(e.errno, e.strerror))
+            sys.stderr.write(
+                "[Picosat] __checkSatisfiability(): I/O Error({0}) {1}\n"
+                                .format(e.errno, e.strerror) )
             raise e
         finally:
             f.close()
@@ -110,7 +117,8 @@ class Picosat(solver.SATSolver):
                             proof.add( int(val) )
 
         except IOError as e:
-            sys.stderr.write("__getProof(): I/O Error({0}) {1}\n".format(
+            sys.stderr.write(
+                "[Picosat] __getProof(): I/O Error({0}) {1}\n".format(
                                                         e.errno, e.strerror))
             raise e
         finally:
@@ -137,7 +145,8 @@ class Picosat(solver.SATSolver):
                     pass
 
         except IOError as e:
-            sys.stderr.write("__getCore(): I/O Error({0}) {1}\n".format(
+            sys.stderr.write(
+                "[Picosat] __getCore(): I/O Error({0}) {1}\n".format(
                                                         e.errno, e.strerror))
             raise e
         finally:
@@ -155,6 +164,36 @@ class Picosat(solver.SATSolver):
         except OSError as e:
             if e.errno != errno.ENOENT:
                 raise e
+
+    #
+    #   Set the solver binary
+    def __setSolverBinary(self):
+        system = platform.system()
+        architecture = platform.architecture()[0]
+
+        if system == 'Linux':
+            if architecture == '64bit':
+                self.solver_bin = 'binutils/picosat_linux_x64'
+            else:
+                raise EnvironmentError('There is not a picosat build for linux i386')
+        elif system == 'Darwin':
+            if architecture == '64bit':
+                self.solver_bin = 'binutils/picosat_osx_intel64'
+            else:
+                raise EnvironmentError('There is not a picosat build for Darwin i386')
+        else:
+            raise EnvironmentError('There is not a picosat build for %s' %
+                                    (system) )
+
+        # Check if is executable
+        if os.path.isfile(self.solver_bin):
+            if not os.access(self.solver_bin, os.X_OK):
+                raise EnvironmentError('%s is not marked as executable' % 
+                                    (self.solver_bin) )
+        else:
+            raise EnvironmentError('Missing binary file "%s"' % 
+                                                            (self.solver_bin) )
+
 
 #
 #

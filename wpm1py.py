@@ -10,7 +10,7 @@ import wpm1
 
 __program__='WPM1PY'
 __author__ = 'Josep Pon Farreny <jpf2@alumnes.udl.cat>'
-__version__ = '0.1a'
+__version__ = '0.2a'
 __licence__ = 'GPL'
 
 
@@ -31,7 +31,7 @@ def main():
         printResult(cost, proof)
 
     except Exception as e:
-        traceback.print_exc()
+        #traceback.print_exc()
         sys.stderr.write( '{0}: {1}\n'.format(e.__class__.__name__, str(e)) )
 
 #
@@ -97,7 +97,7 @@ if __name__ == '__main__':
                             description='Educational implementation of WPM1')
 
     parser.add_argument('-f', '--file', action='store', default="",
-                required=True, help='Path to a wcnf file')
+                required=True, help='Path to a cnf/wcnf file')
 
     parser.add_argument('-s', '--solver', action='store', default='picosat.py', 
                 help='Solver wrapper used to perform underlying SAT operations'

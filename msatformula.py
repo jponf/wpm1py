@@ -85,6 +85,8 @@ class MSatFormula:
         clause will have the specified weight and the old one will have its old
         weight minus the new weight.
 
+        If the old clause new weight is 0 then it is deleted.
+
         Returns the new variable added to the copy.
 
         Raises LookupError: If the specified clause doesn't belong to the formula

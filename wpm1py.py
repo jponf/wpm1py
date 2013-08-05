@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys, argparse, traceback
+import os, sys, imp, argparse, traceback
 
 import wpm1formula
 import wcnfparser
-import picosat
 import wpm1
 
 
@@ -22,7 +21,7 @@ def main():
 
     try:
         parser = wcnfparser.WCNFParser(options.file)
-        solver = picosat.PicoSAT()
+        solver = loadSolver(options.solver)
 
         num_vars, top, clauses = parser.parse()
         formula = wpm1formula.Formula(num_vars, top, clauses)
@@ -59,6 +58,37 @@ def printResult(cost, proof):
                 print lit,
             print '0'
 
+#
+#
+def loadSolver(solver_file):
+
+    expected_class = 'Solver'
+
+    py_mod = loadPythonModule(solver_file)
+    
+    if not hasattr(py_mod, expected_class):
+        raise AttributeError('"%s" does not contain %s class' %
+                                                (solver_file, expected_class) )
+
+    return py_mod.Solver() 
+
+#
+#
+def loadPythonModule(python_file):
+
+    mod_name, file_ext = os.path.splitext(os.path.split(python_file)[-1])
+
+    if file_ext.lower() == '.py':
+        py_mod = imp.load_source(mod_name, python_file)
+
+    elif file_ext.lower() == '.pyc' or file_ext.lower() == '.pyo':
+        py_mod = imp.load_compiled(mod_name, python_file)
+
+    else:
+        raise ImportError('[loadPythonModule] Unknown python extension')
+
+    return py_mod
+
 
 # Program entry point, calls immediatly the main routine
 if __name__ == '__main__':
@@ -67,7 +97,11 @@ if __name__ == '__main__':
                             description='Educational implementation of WPM1')
 
     parser.add_argument('-f', '--file', action='store', default="",
-                    required=True, help='Path to a wcnf file')
+                required=True, help='Path to a wcnf file')
+
+    parser.add_argument('-s', '--solver', action='store', default='picosat.py', 
+                help='Solver wrapper used to perform underlying SAT operations'
+                    '. Default: picosat.py')
 
     options = parser.parse_args()
 

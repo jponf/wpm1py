@@ -25,6 +25,9 @@ class MSatFormula:
 
             - clauses: A set filled with all the hardclauses
                 f.e: set([ set([1,2,-4,5]), set([1,5,-7,8]) )
+
+                For optimization reasons, this set can be a reference to the 
+                internal set of clauses. Do not modify it!
         """
         raise NotImplementedError(
             'getHardClausesFormula(). Abstract method')

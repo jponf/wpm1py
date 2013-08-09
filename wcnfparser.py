@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import sys
+
 #
 #
 class WCNFParser:
@@ -11,9 +13,9 @@ class WCNFParser:
 
     #
     #
-    def __init__(self, file_path):
+    def __init__(self, infile):
 
-        self.file_path = file_path
+        self.infile = infile
 
         self.formula_type = WCNFParser.TYPE_UNKNOWN
 
@@ -37,14 +39,12 @@ class WCNFParser:
             - clauses: A set filled with pairs (weight: int, clause: set)
         """
 
-        # File haven't been parsed before
+        # File hasn't been parsed before
         if not self.clauses:
             
             # Parse file
-            cnf_file = open(self.file_path, 'r')
-
             try:
-                for nline, line in enumerate(cnf_file):
+                for nline, line in enumerate(self.infile):
                     line = line.strip()
 
                     if not line or self.__isComment(line):
@@ -65,10 +65,7 @@ class WCNFParser:
             except SyntaxError as e:
                 sys.stderr.write('[WCNFParser] Error parsing file "%s" (%d): %s\n'
                                     % (file_path, nline, str(e)) )
-                raise e
-
-            finally:
-                cnf_file.close()               
+                raise e            
 
         return self.num_vars, self.top, self.clauses
 

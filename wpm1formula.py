@@ -31,7 +31,7 @@ class Formula(msatformula.MSatFormula):
     #
     # Override
     def getHardClausesFormula( self ):
-        return (self.nvars, set(self.hard_clauses))
+        return (self.nvars, self.hard_clauses)
 
     #
     # Override
@@ -100,7 +100,7 @@ class Formula(msatformula.MSatFormula):
         self.clauses_weights[rclause] = weight
         self.soft_clauses.add(rclause)
 
-        # Check if the old clause now does not penalize if falsified
+        # Check if the previous clause now does not penalize when falsified
         # If so remove it
         if self.clauses_weights[clause] == 0:
             del self.clauses_weights[clause]

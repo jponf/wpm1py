@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os, sys, imp, argparse, traceback
+import os, sys, imp, argparse#, traceback
 
 import wpm1formula
 import wcnfparser
@@ -20,10 +20,11 @@ def main():
     global options
 
     try:
-        parser = wcnfparser.WCNFParser(options.file)
+        parser = wcnfparser.WCNFParser(options.infile)
         solver = loadSolver(options.solver)
 
         num_vars, top, clauses = parser.parse()
+        if options.infile != sys.stdin: options.infile.close()
         formula = wpm1formula.Formula(num_vars, top, clauses)
         
         algorithm = wpm1.WPM1(formula, solver)
@@ -96,8 +97,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
                             description='Educational implementation of WPM1')
 
-    parser.add_argument('-f', '--file', action='store', default="",
-                required=True, help='Path to a cnf/wcnf file')
+    parser.add_argument('infile', nargs='?', type=argparse.FileType('r'),
+                default=sys.stdin, 
+                help='Path to a cnf/wcnf file. If not specified it will be stdin')
 
     parser.add_argument('-s', '--solver', action='store', default='picosat.py', 
                 help='Solver wrapper used to perform underlying SAT operations'

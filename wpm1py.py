@@ -10,8 +10,9 @@ import wpm1
 
 __program__='WPM1PY'
 __author__ = 'Josep Pon Farreny <jpf2@alumnes.udl.cat>'
-__version__ = '0.2a'
+__version__ = '0.4'
 __licence__ = 'GPL'
+__status__ = "Stable"
 
 
 #

@@ -167,7 +167,7 @@ class Solver(satsolver.SATSolver):
                 raise e
 
     #
-    #   Set the solver binary
+    #   Set the solver binary based on the platform and the architecture
     def __setSolverBinary(self):
         system = platform.system()
         architecture = platform.architecture()[0]
@@ -176,7 +176,7 @@ class Solver(satsolver.SATSolver):
             if architecture == '64bit':
                 self.solver_bin = 'binutils/picosat_linux_x64'
             else:
-                raise EnvironmentError('There is no binary file for linux i386')
+                self.solver_bin = 'binutils/picosat_linux_x86'	# TODO: Test it on a x86 machine :D
         elif system == 'Darwin':
             if architecture == '64bit':
                 self.solver_bin = 'binutils/picosat_osx_intel64'

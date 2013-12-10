@@ -28,20 +28,19 @@ class WCNFParser:
     #
     #
     def parse(self):
-        """
-        parse(): ( num_vars: int, top:int, clauses: set() )
+        """parse(): ( num_vars: int, top:int, clauses: set() )
 
-        Parse the file specified on the __init__ method
+        Parses the file specified on the __init__ method.
 
         Returns:
             - num_vars: Formula's range of variables (specified on 'p' line)
-            - top: Hard clauses weight
+            - top: Hard clauses' weight
             - clauses: A set filled with pairs (weight: int, clause: set)
         """
 
         # File hasn't been parsed before
         if not self.clauses:
-            
+
             # Parse file
             try:
                 for nline, line in enumerate(self.infile):
@@ -56,7 +55,7 @@ class WCNFParser:
                     else:
                         self.__parseClause(line)
 
-                # Compare if the amount of parsed clauses with the specified 
+                # Compare if the amount of parsed clauses with the specified
                 # on the parameters line
                 if self.num_clauses != len(self.clauses):
                     raise Exception('[WCNFParser] The amount of parsed clauses '
@@ -65,7 +64,7 @@ class WCNFParser:
             except SyntaxError as e:
                 sys.stderr.write('[WCNFParser] Error parsing file "%s" (%d): %s\n'
                                     % (file_path, nline, str(e)) )
-                raise e            
+                raise e
 
         return self.num_vars, self.top, self.clauses
 
@@ -82,7 +81,7 @@ class WCNFParser:
 
         if self.__isCNF(line_values):
             self.__parseCNFParameters(line_values)
-            
+
         elif self.__isWCNF(line_values):
             self.__parseWCNFParameters(line_values)
 
@@ -96,7 +95,7 @@ class WCNFParser:
 
         self.num_vars = int(line_values[2])
         self.num_clauses = int(line_values[3])
-        
+
         self.formula_type = WCNFParser.TYPE_CNF
 
 
@@ -112,7 +111,7 @@ class WCNFParser:
 
         self.num_vars = int(line_values[2])
         self.num_clauses = int(line_values[3])
-        
+
 
     #
     #
@@ -157,7 +156,7 @@ class WCNFParser:
                                 'be in range +/-[1, %d].' % (lit, num_vars) )
 
         if clause:
-            raise SyntaxError('Trailing 0 not found')        
+            raise SyntaxError('Trailing 0 not found')
 
     #
     #

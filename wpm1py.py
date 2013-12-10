@@ -27,9 +27,9 @@ def main():
         num_vars, top, clauses = parser.parse()
         if options.infile != sys.stdin: options.infile.close()
         formula = wpm1formula.Formula(num_vars, top, clauses)
-        
+
         algorithm = wpm1.WPM1(formula, solver)
-        cost, proof = algorithm.solve()       
+        cost, proof = algorithm.solve()
         printResult(cost, proof)
 
     except Exception as e:
@@ -47,11 +47,11 @@ def printResult(cost, proof):
         print 'v',
         for lit in sorted(proof, key=abs):
             print lit,
-        print 
+        print
 
     else:
 
-        print 's UNSATISFIABLE'        
+        print 's UNSATISFIABLE'
         print 'c Core Clauses'
 
         for clause in proof:
@@ -67,12 +67,12 @@ def loadSolver(solver_file):
     expected_class = 'Solver'
 
     py_mod = loadPythonModule(solver_file)
-    
+
     if not hasattr(py_mod, expected_class):
         raise AttributeError('"%s" does not contain %s class' %
                                                 (solver_file, expected_class) )
 
-    return py_mod.Solver() 
+    return py_mod.Solver()
 
 #
 #
@@ -99,10 +99,10 @@ if __name__ == '__main__':
                             description='Educational implementation of WPM1')
 
     parser.add_argument('infile', nargs='?', type=argparse.FileType('r'),
-                default=sys.stdin, 
+                default=sys.stdin,
                 help='Path to a cnf/wcnf file. If not specified it will be stdin')
 
-    parser.add_argument('-s', '--solver', action='store', default='picosat.py', 
+    parser.add_argument('-s', '--solver', action='store', default='picosat.py',
                 help='Solver wrapper used to perform underlying SAT operations'
                     '. Default: picosat.py')
 

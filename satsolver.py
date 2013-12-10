@@ -3,21 +3,21 @@
 #
 #
 class SATSolver:
-    """
-    Abstract layer between WPM1 algorithm and the underlying sat solver
+    """Abstract layer between WPM1 algorithm and the underlying sat solver
     """
 
     def solve(self, num_vars, formula):
-        """
-        solve(num_vars:int, formula:[]/set): bool, core/truth_assigantion
+        """solve(num_vars:int, formula:[]/set): (bool, core/truth_assigantion)
 
-        Takes the input formula and number of variables and use a SAT solver
-        to solve it, then return the result in an specific format
+        Takes as input a sat formula and the number of variables in the formula,
+        then uses a SAT solver to solve it and returns the result in an specific
+        format detailed below.
 
         Input:
             - num_vars: Number of variables in the formula (Can be greater)
 
             - formula: Can be any iterable data structure filled with clauses
+                F.E: set([[1,2,-3],[-2,3,-5]])
 
         Output:
             A tuple (bool, set/[])

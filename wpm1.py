@@ -15,17 +15,16 @@ class WPM1:
     #
     #
     def solve(self):
-        """
-        solve(): (cost:int, assignation/core: [])
+        """solve(): (cost:int, assignation/core: [])
 
         Solves the formula using the WPM1 algorithm
 
         Returns
-            cost: integer value which represents the cost of solving the given
-                    formula or negative if the formula is unsatisfiable
+            cost: positiveinteger value which represents the cost of solving the
+               given formula or a negative value if the formula is unsatisfiable
 
             assignation/core: A list filled with the truth values assignation if
-                    the formula is satisfiable or the core if it is unsatisfiable
+                   the formula is satisfiable or the core if it is unsatisfiable
         """
         nvars, formula = self.formula.getHardClausesFormula()
         sat, core = self.sat_solver.solve(nvars, formula)
@@ -47,12 +46,11 @@ class WPM1:
                 wmin = self.formula.getMinWeightOfClauses(sout)
 
                 for c in sout:
-                    
                     if not self.formula.isHardClause(c):
                         b = self.formula.relaxClause(c, wmin)
                         blocking_vars.append(b)
-   
+
                 self.formula.addCardinalityConstraint(blocking_vars,
-                                                    MSatFormula.EXACTLY_ONE, 
+                                                    MSatFormula.EXACTLY_ONE,
                                                     MSatFormula.TOP )
                 cost += wmin

@@ -3,10 +3,9 @@
 #
 #
 class MSatFormula:
-    """
-    Stores all the necessary information of a Weighted SAT Formula
+    """Stores all the necessary information of a Weighted SAT Formula
 
-    Clauses must be represented frozensets
+    Clauses should be represented as frozensets to avoid modifications.
     """
 
     TOP = -1
@@ -17,8 +16,7 @@ class MSatFormula:
     #
     #
     def getHardClausesFormula(self):
-        """
-        getHardClausesFormula(): (nvars: int, clauses: set)
+        """getHardClausesFormula(): (nvars: int, clauses: set)
 
         Returns a tuple with 2 components:
             - nvars: At least the value of the highest variable or greater
@@ -26,7 +24,7 @@ class MSatFormula:
             - clauses: A set filled with all the hardclauses
                 f.e: set([ set([1,2,-4,5]), set([1,5,-7,8]) )
 
-                For optimization reasons, this set can be a reference to the 
+                For optimization reasons, this set can be a reference to the
                 internal set of clauses. Do not modify it!
         """
         raise NotImplementedError(
@@ -35,8 +33,7 @@ class MSatFormula:
     #
     #
     def getFormulaWithMinWeight( self, min_weight ):
-        """
-        getFormulaWithMinWeight(min_weight: int): (nvars: int, clauses: set)
+        """getFormulaWithMinWeight(min_weight: int): (nvars: int, clauses: set)
 
         Returns a tuple with 2 components:
             - nvars: At least the value of the highest variable or greater
@@ -50,8 +47,9 @@ class MSatFormula:
     #
     #
     def getMaxWeightLessThan( self, upper_bound ):
-        """
-        maxWeightLessThan(upper_bound:int): int 
+        """maxWeightLessThan(upper_bound:int): int
+
+        Parameters:
 
             - upper_bound: must be a possitive integer > 0 or MSatFormula.TOP
 
@@ -66,8 +64,7 @@ class MSatFormula:
     #
     #
     def getMinWeightOfClauses( self, clauses ):
-        """
-        minWeightOfClauses(clauses: []/set): int
+        """minWeightOfClauses(clauses: []/set): int
 
         Returns the minimum weight of the specified clauses.
 
@@ -81,8 +78,7 @@ class MSatFormula:
     #
     #
     def relaxClause( self, clause, weight ):
-        """
-        relaxClause(clause: set, weight: int): int
+        """relaxClause(clause: set, weight: int): int
 
         Duplicates the given clause adding a new variable to the copy. The new
         clause will have the specified weight and the old one will have its old
@@ -100,19 +96,19 @@ class MSatFormula:
     #
     #
     def addCardinalityConstraint( self, literals, cctype, weight ):
-        """
-        addCardinalityConstraint(literals: set, cctype: int, weight: int)
+        """addCardinalityConstraint(literals: set, cctype: int, weight: int)
 
         Add the specified cardinality constraint 'cctype' to the given literals
         with the specified weight.
 
         - cctype: Must be one of the next MSatFormula 'constants'
             - MSatFormula.EXACTLY_ONE
-            - ...
+            - MSatFormula.AT_MOST_ONE
+            - MSatFormula.AT_LEAST_ONE
 
         - weight: Must be an integer greater than 0 or MSatFormula.TOP
 
-        Raises 
+        Raises
         """
         raise NotImplementedError(
             'addCardinalityConstraint( literals, cctype, weight ). '
@@ -121,12 +117,11 @@ class MSatFormula:
     #
     #
     def isHardClause( self, clause ):
-        """
-        isHardClause(clause: set): bool
+        """isHardClause(clause: set): bool
 
         Returns True if the specified clause is a hard clause. False otherwise.
         """
         raise NotImplementedError(
             'isHardClause( upper_bound ). Abstract method')
 
-    
+

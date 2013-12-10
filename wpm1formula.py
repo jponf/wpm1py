@@ -11,12 +11,13 @@ class Formula(msatformula.MSatFormula):
     #
     #
     def __init__( self, num_variables, top, clauses ):
-        """
-        Initialize a new formula
+        """Initializes a new formula
 
-        - num_variables: number of different variables in the formula
+        Parameters:
+            - num_variables: number of different variables in the formula
 
-        - clauses: An iterable of tuples with the following format (weight, clause)
+            - clauses: An iterable of tuples with the following format
+                       (weight, clause)
         """
         self.hard_clauses = set()
         self.soft_clauses = set()
@@ -29,25 +30,25 @@ class Formula(msatformula.MSatFormula):
 
 
     #
-    # Override
+    # Override (See base class specification)
     def getHardClausesFormula( self ):
         return (self.nvars, self.hard_clauses)
 
     #
-    # Override
+    # Override (See base class specification)
     def getFormulaWithMinWeight( self, min_weight ):
         if min_weight > self.top:
             return set()
 
         rf = set(self.hard_clauses)
-        rf.update( [c for c in self.soft_clauses 
+        rf.update( [c for c in self.soft_clauses
                         if self.clauses_weights[c] >= min_weight] )
 
         return (self.nvars, rf)
 
 
     #
-    # Override
+    # Override (See base class specification)
     def getMaxWeightLessThan( self, upper_bound ):
         if upper_bound == msatformula.MSatFormula.TOP:
             upper_bound = self.top
@@ -65,7 +66,7 @@ class Formula(msatformula.MSatFormula):
         return w
 
     #
-    # Override
+    # Override (See base class specification)
     def getMinWeightOfClauses( self, clauses ):
 
         wmin = self.top
@@ -78,17 +79,17 @@ class Formula(msatformula.MSatFormula):
                 if cw < wmin:
                     wmin = cw
             except:
-                raise LookupError('Clause %s do not belong to the formula' % 
+                raise LookupError('Clause %s do not belong to the formula' %
                                                                     str(clause))
 
         return wmin
 
     #
-    # Override
+    # Override (See base class specification)
     def relaxClause( self, clause, weight ):
 
         if clause not in self.soft_clauses:
-            raise LookupError('Clause %s do not belong to the formula' % 
+            raise LookupError('Clause %s do not belong to the formula' %
                                                                     str(clause))
 
         nvar = self.__newVariable()
@@ -106,12 +107,12 @@ class Formula(msatformula.MSatFormula):
             del self.clauses_weights[clause]
             self.soft_clauses.remove(clause)
 
-        
+
 
         return nvar
 
     #
-    # Override
+    # Override (See base class specification)
     def addCardinalityConstraint( self, literals, cctype, weight ):
 
         if weight == msatformula.MSatFormula.TOP:
@@ -128,7 +129,7 @@ class Formula(msatformula.MSatFormula):
 
 
     #
-    # Override
+    # Override (See base class specification)
     def isHardClause( self, clause ):
         return clause in self.hard_clauses
 
@@ -171,18 +172,17 @@ class Formula(msatformula.MSatFormula):
     #
     #
     def __addAtMostOneConstraint(self, literals, weight):
-
         if type(literals) != list:
             literals = list(literals)
-     
+
 
         for i in xrange( len(literals)-1 ):
             for j in xrange(i+1, len(literals) ):
-                clause = frozenset( (-literals[i], -literals[j]) )  
+                clause = frozenset( (-literals[i], -literals[j]) )
                 self.__addClause( weight, clause )
 
     #
     #
     def __newVariable(self):
         self.nvars += 1
-        return self.nvars   
+        return self.nvars

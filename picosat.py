@@ -3,12 +3,10 @@
 import satsolver
 import sys, os, errno, platform
 
-
 #
 #
 class Solver(satsolver.SATSolver):
-    """
-    Solves SAT formulas by using Picosat as the underlying sat solver
+    """Solves SAT formulas by using Picosat as the underlying sat solver
     """
 
     FORMULA_FILE_NAME = 'binutils/formula.picosat.cnf'
@@ -18,21 +16,19 @@ class Solver(satsolver.SATSolver):
     #
     #
     def __init__(self):
-        """
-        Initialize a new Picosat instance
+        """Initialize a new Picosat instance
         """
         self.__setSolverBinary()
 
     #
     #
     def solve(self, num_vars, formula):
-        """
-        solve(): (bool, []/set) // See solver.py
+        """solve(): (bool, []/set) // See solver.py
         """
 
         # Write formula to file and execute solver
         self.__writeFormula(num_vars, formula)
-        os.system('%s -c %s %s > %s' % (self.solver_bin, 
+        os.system('%s -c %s %s > %s' % (self.solver_bin,
                                         Solver.CORE_FILE_NAME,
                                         Solver.FORMULA_FILE_NAME,
                                         Solver.OUTPUT_FILE_NAME))
@@ -48,15 +44,16 @@ class Solver(satsolver.SATSolver):
         self.__delTempFiles()
 
         return sat, proof_or_core
-    
-    #
-    #   Write the given formula to a temp file 
-    def __writeFormula(self, num_vars, formula):
-        """
-        __writeFormula(num_vars, formula): void
 
-            Writes the given formula to FORMULA_FILE_NAME if there is an
-            error prints information and raises the same error
+    #
+    #   Write the given formula to a temp file
+    def __writeFormula(self, num_vars, formula):
+        """__writeFormula(num_vars, formula): void
+
+            Writes the given formula to FORMULA_FILE_NAME.
+
+            If there is any error then prints the information and raises the
+            same error to the caller.
         """
         ff = None
 
@@ -90,7 +87,7 @@ class Solver(satsolver.SATSolver):
             for l in f:
                 if 's SATISFIABLE' == l.strip():
                     return True
-    
+
             return False
 
         except IOError as e:
@@ -109,7 +106,7 @@ class Solver(satsolver.SATSolver):
 
         try:
             f = open(Solver.OUTPUT_FILE_NAME, 'r')
-    
+
             for l in f:
                 if l[0] == 'v':
                     dummy, sapace, values = l.partition(' ')
@@ -176,7 +173,7 @@ class Solver(satsolver.SATSolver):
             if architecture == '64bit':
                 self.solver_bin = 'binutils/picosat_linux_x64'
             else:
-                self.solver_bin = 'binutils/picosat_linux_x86'	# TODO: Test it on a x86 machine :D
+                self.solver_bin = 'binutils/picosat_linux_x86'  # TODO: Test it on a x86 machine :D
         elif system == 'Darwin':
             if architecture == '64bit':
                 self.solver_bin = 'binutils/picosat_osx_intel64'
@@ -189,10 +186,10 @@ class Solver(satsolver.SATSolver):
         # Check if is executable
         if os.path.isfile(self.solver_bin):
             if not os.access(self.solver_bin, os.X_OK):
-                raise EnvironmentError('%s is not marked as executable' % 
+                raise EnvironmentError('%s is not marked as executable' %
                                     (self.solver_bin) )
         else:
-            raise EnvironmentError('Missing binary file "%s"' % 
+            raise EnvironmentError('Missing binary file "%s"' %
                                                             (self.solver_bin) )
 
 

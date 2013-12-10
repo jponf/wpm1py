@@ -5,7 +5,7 @@ import sys, os, errno, platform
 
 #
 #
-class Solver(satsolver.SATSolver):
+class Picosat(satsolver.SATSolver):
     """Solves SAT formulas by using Picosat as the underlying sat solver
     """
 
@@ -29,9 +29,9 @@ class Solver(satsolver.SATSolver):
         # Write formula to file and execute solver
         self.__writeFormula(num_vars, formula)
         os.system('%s -c %s %s > %s' % (self.solver_bin,
-                                        Solver.CORE_FILE_NAME,
-                                        Solver.FORMULA_FILE_NAME,
-                                        Solver.OUTPUT_FILE_NAME))
+                                        Picosat.CORE_FILE_NAME,
+                                        Picosat.FORMULA_FILE_NAME,
+                                        Picosat.OUTPUT_FILE_NAME))
 
         sat = self.__checkSatisfiability()
         if sat:
@@ -58,7 +58,7 @@ class Solver(satsolver.SATSolver):
         ff = None
 
         try:
-            ff = open(Solver.FORMULA_FILE_NAME, 'w')
+            ff = open(Picosat.FORMULA_FILE_NAME, 'w')
 
             print >>ff, 'p cnf', num_vars, len(formula)
 
@@ -69,7 +69,7 @@ class Solver(satsolver.SATSolver):
 
         except IOError as e:
             sys.stderr.write(
-                "[Solver] __writeFormula(...): I/O Error({0}) {1}\n".format(
+                "[Picosat] __writeFormula(...): I/O Error({0}) {1}\n".format(
                                                         e.errno, e.strerror))
             raise e
 
@@ -83,7 +83,7 @@ class Solver(satsolver.SATSolver):
 
         try:
 
-            f = open(Solver.OUTPUT_FILE_NAME, 'r')
+            f = open(Picosat.OUTPUT_FILE_NAME, 'r')
             for l in f:
                 if 's SATISFIABLE' == l.strip():
                     return True
@@ -92,7 +92,7 @@ class Solver(satsolver.SATSolver):
 
         except IOError as e:
             sys.stderr.write(
-                "[Solver] __checkSatisfiability(): I/O Error({0}) {1}\n"
+                "[Picosat] __checkSatisfiability(): I/O Error({0}) {1}\n"
                                 .format(e.errno, e.strerror) )
             raise e
         finally:
@@ -105,7 +105,7 @@ class Solver(satsolver.SATSolver):
         proof = set()
 
         try:
-            f = open(Solver.OUTPUT_FILE_NAME, 'r')
+            f = open(Picosat.OUTPUT_FILE_NAME, 'r')
 
             for l in f:
                 if l[0] == 'v':
@@ -116,7 +116,7 @@ class Solver(satsolver.SATSolver):
 
         except IOError as e:
             sys.stderr.write(
-                "[Solver] __getProof(): I/O Error({0}) {1}\n".format(
+                "[Picosat] __getProof(): I/O Error({0}) {1}\n".format(
                                                         e.errno, e.strerror))
             raise e
         finally:
@@ -131,7 +131,7 @@ class Solver(satsolver.SATSolver):
         core = set()
 
         try:
-            f = open(Solver.CORE_FILE_NAME, 'r')
+            f = open(Picosat.CORE_FILE_NAME, 'r')
 
             for l in f:
                 try:
@@ -144,7 +144,7 @@ class Solver(satsolver.SATSolver):
 
         except IOError as e:
             sys.stderr.write(
-                "[Solver] __getCore(): I/O Error({0}) {1}\n".format(
+                "[Picosat] __getCore(): I/O Error({0}) {1}\n".format(
                                                         e.errno, e.strerror))
             raise e
         finally:
@@ -156,9 +156,9 @@ class Solver(satsolver.SATSolver):
     #   Delete temporal files
     def __delTempFiles(self):
         try:
-            os.remove(Solver.FORMULA_FILE_NAME)
-            os.remove(Solver.OUTPUT_FILE_NAME)
-            os.remove(Solver.CORE_FILE_NAME)
+            os.remove(Picosat.FORMULA_FILE_NAME)
+            os.remove(Picosat.OUTPUT_FILE_NAME)
+            os.remove(Picosat.CORE_FILE_NAME)
         except OSError as e:
             if e.errno != errno.ENOENT:
                 raise e
@@ -199,6 +199,6 @@ if __name__ == '__main__':
 
     formula_unsat = [[1,2],[-1,2],[1,-2], [-1, -2]]
     formula_sat = [[1,2], [-1,2], [1,-2]]
-    p = Solver()
+    p = Picosat()
 
     print p.solve(2, formula)

@@ -1,16 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os, sys, imp, argparse#, traceback
+import argparse
+import imp
+import sys
+import os
 
 import wpm1formula
 import wcnfparser
+import satsolver
 import wpm1
 
 
 __program__='WPM1PY'
 __author__ = 'Josep Pon Farreny <jpf2@alumnes.udl.cat>'
-__version__ = '0.4'
+__version__ = '0.5'
 __licence__ = 'GPL'
 __status__ = "Stable"
 
@@ -33,8 +37,9 @@ def main():
         printResult(cost, proof)
 
     except Exception as e:
-        #traceback.print_exc()
         sys.stderr.write( '{0}: {1}\n'.format(e.__class__.__name__, str(e)) )
+        # Uncoment the name below to get the stack trace
+        #raise
 
 #
 #
@@ -83,7 +88,11 @@ def loadSolver(solver):
             'Error importing the solver "%s". The attribute "%s" does not exist'
                 % (solver, comp) )
 
-    return mod()
+    if issubclass(mod, satsolver.SATSolver):
+        return mod()
+    else:
+        raise ImportError('Error the specified solver class %s '\
+            'does not inherit satsolver.SATSolver' % solver)
 
 # Program entry point, calls immediatly the main routine
 if __name__ == '__main__':
@@ -95,9 +104,9 @@ if __name__ == '__main__':
                 default=sys.stdin,
                 help='Path to a cnf/wcnf file. If not specified it will be stdin')
 
-    parser.add_argument('-s', '--solver', action='store', default='picosat.Solver',
+    parser.add_argument('-s', '--solver', action='store', default='picosat.Picosat',
                 help='Solver wrapper used to perform underlying SAT operations'
-                    '. Default: picosat.Solver')
+                    '. Default: picosat.Picosat')
 
     options = parser.parse_args()
 

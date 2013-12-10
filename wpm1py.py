@@ -62,35 +62,28 @@ def printResult(cost, proof):
 
 #
 #
-def loadSolver(solver_file):
+def loadSolver(solver):
 
-    expected_class = 'Solver'
+    components = solver.split('.')
 
-    py_mod = loadPythonModule(solver_file)
+    first_module = components[0]
+    components = components[1:]
 
-    if not hasattr(py_mod, expected_class):
-        raise AttributeError('"%s" does not contain %s class' %
-                                                (solver_file, expected_class) )
+    try:
+        mod = __import__(first_module)
+    except ImportError:
+        raise ImportError(
+            'Error importing the solver module: %s' % first_module)
 
-    return py_mod.Solver()
+    try:
+        for comp in components:
+            mod = getattr(mod, comp)
+    except AttributeError:
+        raise ImportError(
+            'Error importing the solver "%s". The attribute "%s" does not exist'
+                % (solver, comp) )
 
-#
-#
-def loadPythonModule(python_file):
-
-    mod_name, file_ext = os.path.splitext(os.path.split(python_file)[-1])
-
-    if file_ext.lower() == '.py':
-        py_mod = imp.load_source(mod_name, python_file)
-
-    elif file_ext.lower() == '.pyc' or file_ext.lower() == '.pyo':
-        py_mod = imp.load_compiled(mod_name, python_file)
-
-    else:
-        raise ImportError('[loadPythonModule] Unknown python extension')
-
-    return py_mod
-
+    return mod()
 
 # Program entry point, calls immediatly the main routine
 if __name__ == '__main__':
@@ -102,9 +95,9 @@ if __name__ == '__main__':
                 default=sys.stdin,
                 help='Path to a cnf/wcnf file. If not specified it will be stdin')
 
-    parser.add_argument('-s', '--solver', action='store', default='picosat.py',
+    parser.add_argument('-s', '--solver', action='store', default='picosat.Solver',
                 help='Solver wrapper used to perform underlying SAT operations'
-                    '. Default: picosat.py')
+                    '. Default: picosat.Solver')
 
     options = parser.parse_args()
 

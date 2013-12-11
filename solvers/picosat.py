@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import satsolver
-import sys, os, errno, platform
+import platform
+import errno
+import sys
+import os
 
 #
 #
@@ -9,9 +12,11 @@ class PicoSAT(satsolver.SATSolver):
     """Solves SAT formulas by using PicoSAT as the underlying sat solver
     """
 
-    FORMULA_FILE_NAME = 'binutils/formula.picosat.cnf'
-    OUTPUT_FILE_NAME = 'binutils/out.picosat.cnf'
-    CORE_FILE_NAME = 'binutils/core.picosat.cnf'
+    BASE_DIR = os.path.dirname(__file__)
+
+    FORMULA_FILE_NAME = BASE_DIR + '/binutils/formula.picosat.cnf'
+    OUTPUT_FILE_NAME = BASE_DIR + '/binutils/out.picosat.cnf'
+    CORE_FILE_NAME = BASE_DIR + '/binutils/core.picosat.cnf'
 
     #
     #
@@ -19,6 +24,7 @@ class PicoSAT(satsolver.SATSolver):
         """Initialize a new PicoSAT instance
         """
         self.__setSolverBinary()
+        self.base_dir = os.path.dirname(__file__)
 
     #
     #
@@ -166,17 +172,21 @@ class PicoSAT(satsolver.SATSolver):
     #
     #   Set the solver binary based on the platform and the architecture
     def __setSolverBinary(self):
+
         system = platform.system()
         architecture = platform.architecture()[0]
 
         if system == 'Linux':
             if architecture == '64bit':
-                self.solver_bin = 'binutils/picosat_linux_x64'
+                self.solver_bin = PicoSAT.BASE_DIR \
+                                            + '/binutils/picosat_linux_x64'
             else:
-                self.solver_bin = 'binutils/picosat_linux_x86'  # TODO: Test it on a x86 machine :D
+                self.solver_bin = PicoSAT.BASE_DIR \
+                                            + '/binutils/picosat_linux_x86'  # TODO: Test it on a x86 machine :D
         elif system == 'Darwin':
             if architecture == '64bit':
-                self.solver_bin = 'binutils/picosat_osx_intel64'
+                self.solver_bin = PicoSAT.BASE_DIR \
+                                            + '/binutils/picosat_osx_intel64'
             else:
                 raise EnvironmentError('There is no binary file for Darwin i386')
         else:

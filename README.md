@@ -28,6 +28,13 @@ There are two restrictions for the solver interface implementations:
   1. All the methods on the base class have to be overrided.
   2. The \__init\__ method can't expect arguments.
 
+<a name="importnote"/>
+**Note:** If the solvers' modules are placed inside a python package (subdirectory)
+the package's \__init\__.py file must import the python module that we want to load,
+otherwise the load at runtime will fail. If you look inside the [/solvers][solvers_dir]
+package, you'll see a [\__init\__.py][solvers_init] file with the import instruction 
+for the picosat module.
+
 ## Using WPM1PY ##
 
 To run the solver has to be executed the wpm1py.py file using at least Python 2.6.
@@ -45,7 +52,7 @@ The solver accepts two parameters:
     + This parameter is specified using the flag -s/--solver and lets change the SAT-solver
       used by the WPM1 algorithm. The expected value looks like a python import path 
       _(package.module.class)_ and must specify a python class that inherits 
-      from satsolver.SATSolver. By default picosat.PicoSAT is used.
+      from satsolver.SATSolver. By default *solvers.picosat.PicoSAT* is used.
 
       + Example:
       
@@ -54,6 +61,8 @@ The solver accepts two parameters:
         the same folder than the wpm1py.py):
         
         -s _spsolver.SuperSolver_
+        
+      To use a solver module on a diferent directory please see [this](#importnote) note.
 
 
 
@@ -61,5 +70,8 @@ The solver accepts two parameters:
 
 [paper]: http://www.iiia.csic.es/~levy/papers/CP12.pdf
 [SATSolver]: ./satsolver.py
-[picosat_ex]: ./picosat.py
+[solvers_dir]: ./solvers
+[solvers_init]: ./solvers/__init__.py
+[picosat_ex]: ./solvers/picosat.py
 [picosat_home]: http://fmv.jku.at/picosat/
+

@@ -104,9 +104,9 @@ if __name__ == '__main__':
                 default=sys.stdin,
                 help='Path to a cnf/wcnf file. If not specified it will be stdin')
 
-    parser.add_argument('-s', '--solver', action='store', default='picosat.Picosat',
+    parser.add_argument('-s', '--solver', action='store', default='picosat.PicoSAT',
                 help='Solver wrapper used to perform underlying SAT operations'
-                    '. Default: picosat.Picosat')
+                    '. Default: picosat.PicoSAT')
 
     options = parser.parse_args()
 

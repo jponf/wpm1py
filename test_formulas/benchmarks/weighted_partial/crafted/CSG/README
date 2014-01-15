@@ -1,0 +1,10 @@
+These instances are Weighted Partial Max-SAT instances for Coalition
+Structure Generation (CSG) Problem.
+CSG refers to partitioning agents into exhaustive and disjoint coalitions
+so that the total value of all the coalitions is maximized.
+
+See the following paper:
+Xiaojuan Liao, Miyuki Koshimura, Hiroshi Fujita, and Ryuzo Hasegawa. 
+Solving the Coalition Structure Generation Problem with MaxSAT, 
+Proceedings of 24th International Conference on Tools with Artificial Intelligence, 
+November 2012 (Athens, Greece) 

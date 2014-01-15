@@ -1,0 +1,23 @@
+Definitions:
+1.       *Population* = admission year X admission semester X track. Admission year \in last 4 years, admission semester \in {winter, spring}, tack \in 4 possible tracks.
+2.       *Unit* = 1,2 or 3 hours that are scheduled consecutively. For example, a 3-hours course can be split to two units of 1 + 2 hours.
+3.       Unit *type* \in {lecture, recitation, lab})
+ 
+Constraints:
+1.       Teachers' constraints: impossible slots (hard), preferable slots (soft), undesirable slots (soft).
+2.       TA's constraints: same as teachers constraints + courses they intend to take as students.
+3.       Population constraints. Each population has a set of courses they have to take in each of the 8 semesters of their studies.  The courses in each such set cannot overlap (hard). Elective courses suggested for that population should not overlap themselves (soft) or the mandatory courses (soft).
+4.       Unfavorable hours for scheduling, like after 6 pm, etc. (soft).
+5.       Teachers constraints due to multiple teaching: courses taught by the same teacher (or a TA) cannot overlap (hard).
+6.       Splitting constraints: each course of 3 hours or more should/should not be split to units (e.g. 2 + 1 for a 3 hour course)  according to a given weight (soft).
+7.       Units of the same course should not overlap.
+8.       Multiple groups of the same course/type should overlap (soft).
+9.       There should not be 'holes' in the schedule (soft. Proportional to the number of holes).
+10.   Certain flagged courses should be scheduled later in the day because they target external students (soft).
+ 
+ 
+There is a  variable for each course/type/unit/day, indicating whether that course/type/unit was scheduled that day, and
+      for each course/type/unit/hour, indicating whether that course/type/unit was scheduled earlier than that hour.
+ 
+ 
+Numbers: slots: 60, ~ 100 courses, ~200 teachers + TAs, 4 tracks.  

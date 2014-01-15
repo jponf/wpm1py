@@ -1,0 +1,14 @@
+These problems are obtained by SAT transformation from 
+JSSP(job shop scheduling problems) in OR-Library(
+http://people.brunel.ac.uk/~mastjjb/jeb/info.html).
+The transformation is based on Crawford and Baker's method
+described in Proc. of AAAI-94. 
+Each problem file is named xxx-yyy-zzz.
+xxx is problem name, yyy is a lower bound of the optimal schedule, and
+zzz is a upper bound of the optimal schedule.
+A Max-SAT solution represents a optimal schedule whose length is
+'yyy+uuu' where uuu is the number of soft clauses
+satisfied in the solution.
+
+file: la04-567-0696.wcnf
+

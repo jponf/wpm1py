@@ -1,3 +1,8 @@
+# Python "compiled" files
 *.py[cod]
+
+# OS X folder settings
 .DS_Store
+
+# Temporal files
 *.picosat.cnf

@@ -1,0 +1,1 @@
+The partial Max-2-SAT benchmarks submitted are transformed from forced satisfiable SAT benchmarks of Model RB. These benchmarks are planted with hidden optimum solutions. For more information, please see http://www.nlsde.buaa.edu.cn/~kexu/benchmarks/max-sat-benchmarks.htm

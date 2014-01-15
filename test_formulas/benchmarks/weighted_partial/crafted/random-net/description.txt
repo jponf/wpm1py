@@ -1,0 +1,13 @@
+===========================
+Benchmark Description
+for Max-SAT Evaluation 2008
+===========================
+
+All problems in the MPE suite are MPE queries on randomly generated Bayesian networks.
+
+1) A Bayesian network is generated with a specified connectivity.
+2) All leaf nodes are randomly asserted as evidence.
+3) The resulting MPE query is converted into a weighted Max-SAT problem. (see "Using Weighted MAX-SAT Engines to Solve MPE" by Park, 2002)
+4) The real weights are adjusted to fit the range in the format.
+
+Contact Knot at thammaknot@ucla.edu if you have any question.

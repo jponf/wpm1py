@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 
-#
-#
+
 class SATSolver:
     """Abstract layer between WPM1 algorithm and the underlying sat solver
     """
+
+    SOLVER_SATISFIABLE = 1
+    SOLVER_UNSATISFIABLE = 0
+    SOLVER_UNKNOWN = -1
 
     def solve(self, num_vars, formula):
         """solve(num_vars:int, formula:[]/set): (bool, core/truth_assigantion)
@@ -22,15 +25,19 @@ class SATSolver:
         Output:
             A tuple (bool, set/[])
 
-            The first component indicates if the formula is satisfiable(True) or
-            unsatisfiable(False).
+            The first component indicates if the formula is satisfiable,
+            unsatisfiable or unknown if the solver can't find an answer due to
+            memory or time limitations
 
             The second component depends on the first one:
-                True: Truth assignation that satisfies the formula as an iterable
-                False: Core clauses as an iterable of iterables
+                SOLVER_SATISFIABLE: Truth assignation that satisfies the formula
+                                    as an iterable
+                SOLVER_UNSATISFIABLE: Core clauses as an iterable of iterables
+                SOLVER_UNKNOWN: None
 
                 F.E:
-                    - If True -> [1,-2,3]
-                    - If False -> [[1,2], [-1,2], [1,-2], [-1,-2]]
+                    - If SOLVER_SATISFIABLE -> [1,-2,3]
+                    - If SOLVER_UNSATISFIABLE -> [1,2], [-1,2], [1,-2], [-1,-2]
+                    - If SOLVER_UNKNOWN -> None
         """
         raise NotImplementedError('solve( num_vars, formula ). Abstract method')

@@ -6,8 +6,7 @@ import errno
 import sys
 import os
 
-#
-#
+
 class PicoSAT(satsolver.SATSolver):
     """Solves SAT formulas by using PicoSAT as the underlying sat solver
     """
@@ -15,7 +14,8 @@ class PicoSAT(satsolver.SATSolver):
     BASE_DIR = os.path.dirname(__file__)
 
     FORMULA_FILE_NAME = BASE_DIR + '/binutils/formula.picosat.cnf'
-    OUTPUT_FILE_NAME = BASE_DIR + '/binutils/out.picosat.cnf'
+    OUTPUT_FILE_NAME = BASE_DIR + '/binutils/out.picosat.txt'
+    ERROR_FILE_NAME = BASE_DIR + '/binutils/err.picosat.txt'
     CORE_FILE_NAME = BASE_DIR + '/binutils/core.picosat.cnf'
 
     #
@@ -34,15 +34,20 @@ class PicoSAT(satsolver.SATSolver):
 
         # Write formula to file and execute solver
         self.__writeFormula(num_vars, formula)
-        os.system('%s -c %s %s > %s' % (self.solver_bin,
-                                        PicoSAT.CORE_FILE_NAME,
-                                        PicoSAT.FORMULA_FILE_NAME,
-                                        PicoSAT.OUTPUT_FILE_NAME))
+        os.system('%s -c %s %s > %s 2> %s' % (
+            self.solver_bin,
+            PicoSAT.CORE_FILE_NAME,
+            PicoSAT.FORMULA_FILE_NAME,
+            PicoSAT.OUTPUT_FILE_NAME,
+            PicoSAT.ERROR_FILE_NAME)
+        )
 
         sat = self.__checkSatisfiability()
-        if sat:
+        proof_or_core = None
+
+        if sat == satsolver.SATSolver.SOLVER_SATISFIABLE:
             proof_or_core = self.__getProof()
-        else:
+        elif sat == satsolver.SATSolver.SOLVER_UNSATISFIABLE:
             proof_or_core = self.__getCore()
 
         # Delete files to avoid possible problems due to unfinished operations
@@ -76,7 +81,7 @@ class PicoSAT(satsolver.SATSolver):
         except IOError as e:
             sys.stderr.write(
                 "[PicoSAT] __writeFormula(...): I/O Error({0}) {1}\n".format(
-                                                        e.errno, e.strerror))
+                e.errno, e.strerror))
             raise e
 
         finally:
@@ -87,22 +92,26 @@ class PicoSAT(satsolver.SATSolver):
     #   Check if solver output contains the s SATISFIABLE message
     def __checkSatisfiability(self):
 
+        f = None
         try:
-
             f = open(PicoSAT.OUTPUT_FILE_NAME, 'r')
             for l in f:
-                if 's SATISFIABLE' == l.strip():
-                    return True
+                lstriped = l.strip()
+                if 's SATISFIABLE' == lstriped:
+                    return satsolver.SATSolver.SOLVER_SATISFIABLE
+                elif 's UNSATISFIABLE' == lstriped:
+                    return satsolver.SATSolver.SOLVER_UNSATISFIABLE
 
-            return False
+            return satsolver.SATSolver.SOLVER_UNKNOWN
 
         except IOError as e:
             sys.stderr.write(
                 "[PicoSAT] __checkSatisfiability(): I/O Error({0}) {1}\n"
-                                .format(e.errno, e.strerror) )
+                .format(e.errno, e.strerror))
             raise e
         finally:
-            f.close()
+            if f:
+                f.close()
 
     #
     #   Returns a set with all the literals of the satisfiability proof
@@ -116,14 +125,14 @@ class PicoSAT(satsolver.SATSolver):
             for l in f:
                 if l[0] == 'v':
                     dummy, sapace, values = l.partition(' ')
-                    for val in map( int, values.split(' ') ):
+                    for val in map(int, values.split(' ')):
                         if val != 0:
-                            proof.add( int(val) )
+                            proof.add(int(val))
 
         except IOError as e:
             sys.stderr.write(
                 "[PicoSAT] __getProof(): I/O Error({0}) {1}\n".format(
-                                                        e.errno, e.strerror))
+                e.errno, e.strerror))
             raise e
         finally:
             f.close()
@@ -135,6 +144,7 @@ class PicoSAT(satsolver.SATSolver):
     def __getCore(self):
 
         core = set()
+        f = None
 
         try:
             f = open(PicoSAT.CORE_FILE_NAME, 'r')
@@ -151,10 +161,11 @@ class PicoSAT(satsolver.SATSolver):
         except IOError as e:
             sys.stderr.write(
                 "[PicoSAT] __getCore(): I/O Error({0}) {1}\n".format(
-                                                        e.errno, e.strerror))
+                e.errno, e.strerror))
             raise e
         finally:
-            f.close()
+            if f:
+                f.close()
 
         return core
 
@@ -162,8 +173,9 @@ class PicoSAT(satsolver.SATSolver):
     #   Delete temporal files
     def __delTempFiles(self):
         try:
-            os.remove(PicoSAT.FORMULA_FILE_NAME)
             os.remove(PicoSAT.OUTPUT_FILE_NAME)
+            os.remove(PicoSAT.ERROR_FILE_NAME)
+            os.remove(PicoSAT.FORMULA_FILE_NAME)
             os.remove(PicoSAT.CORE_FILE_NAME)
         except OSError as e:
             if e.errno != errno.ENOENT:
@@ -179,36 +191,40 @@ class PicoSAT(satsolver.SATSolver):
         if system == 'Linux':
             if architecture == '64bit':
                 self.solver_bin = PicoSAT.BASE_DIR \
-                                            + '/binutils/picosat_linux_x64'
+                    + '/binutils/picosat_linux_x64'
             else:
+                # TODO: Test it on a x86 machine :D
                 self.solver_bin = PicoSAT.BASE_DIR \
-                                            + '/binutils/picosat_linux_x86'  # TODO: Test it on a x86 machine :D
+                    + '/binutils/picosat_linux_x86'
+
         elif system == 'Darwin':
             if architecture == '64bit':
                 self.solver_bin = PicoSAT.BASE_DIR \
-                                            + '/binutils/picosat_osx_intel64'
+                    + '/binutils/picosat_osx_intel64'
             else:
-                raise EnvironmentError('There is no binary file for Darwin i386')
+                raise EnvironmentError(
+                    'There is no binary file for Darwin i386')
         else:
-            raise EnvironmentError('There is no binary file for %s' %
-                                    (system) )
+            raise EnvironmentError('There is no binary file for %s'
+                                   % system)
 
         # Check if is executable
         if os.path.isfile(self.solver_bin):
             if not os.access(self.solver_bin, os.X_OK):
                 raise EnvironmentError('%s is not marked as executable' %
-                                    (self.solver_bin) )
+                                       (self.solver_bin))
         else:
-            raise EnvironmentError('Missing binary file "%s"' %
-                                                            (self.solver_bin) )
+            raise EnvironmentError('Missing binary file "%s"'
+                                   % (self.solver_bin))
 
 
 #
 #
 if __name__ == '__main__':
 
-    formula_unsat = [[1,2],[-1,2],[1,-2], [-1, -2]]
-    formula_sat = [[1,2], [-1,2], [1,-2]]
+    formula_unsat = [[1, 2], [-1, 2], [1, -2], [-1, -2]]
+    formula_sat = [[1, 2], [-1, 2], [1, -2]]
     p = PicoSAT()
 
-    print p.solve(2, formula)
+    print p.solve(2, formula_sat)
+    print p.solve(2, formula_unsat)

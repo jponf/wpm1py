@@ -2,8 +2,7 @@
 
 import sys
 
-#
-#
+
 class WCNFParser:
 
     TYPE_UNKNOWN = 0
@@ -11,8 +10,6 @@ class WCNFParser:
     TYPE_WEIGHTED = -2
     TYPE_WEIGHTED_PARTIAL = -3   # Same parameters as partial
 
-    #
-    #
     def __init__(self, infile):
 
         self.infile = infile
@@ -24,9 +21,6 @@ class WCNFParser:
         self.num_vars = 0
         self.top = 1
 
-
-    #
-    #
     def parse(self):
         """parse(): ( num_vars: int, top:int, clauses: set() )
 
@@ -58,12 +52,14 @@ class WCNFParser:
                 # Compare if the amount of parsed clauses with the specified
                 # on the parameters line
                 if self.num_clauses != len(self.clauses):
-                    raise Exception('[WCNFParser] The amount of parsed clauses '
+                    raise Exception(
+                        '[WCNFParser] The amount of parsed clauses '
                         'does not match the specified on the parameters line')
 
             except SyntaxError as e:
-                sys.stderr.write('[WCNFParser] Error parsing file "%s" (%d): %s\n'
-                                    % (file_path, nline, str(e)) )
+                sys.stderr.write(
+                    '[WCNFParser] Error parsing file "%s" (%d): %s\n'
+                    % (self.infile.name, nline, str(e)))
                 raise e
 
         return self.num_vars, self.top, self.clauses
@@ -90,14 +86,14 @@ class WCNFParser:
     def __parseCNFParameters(self, line_values):
 
         if len(line_values) != 4:
-            raise SyntaxError('[WCNFParser] Parameters line for cnf format must '
+            raise SyntaxError(
+                '[WCNFParser] Parameters line for cnf format must '
                 'have 4 elements: p cnf nbvar nbclauses')
 
         self.num_vars = int(line_values[2])
         self.num_clauses = int(line_values[3])
 
         self.formula_type = WCNFParser.TYPE_CNF
-
 
     #
     #
@@ -112,9 +108,6 @@ class WCNFParser:
         self.num_vars = int(line_values[2])
         self.num_clauses = int(line_values[3])
 
-
-    #
-    #
     def __parseClause(self, line):
 
         values = map(int, line.split())
@@ -125,7 +118,8 @@ class WCNFParser:
             weight = 1
         else:
             if len(values) < 3:
-                raise SyntaxError('[WCNFParser] Weighted clause line must have '
+                raise SyntaxError(
+                    '[WCNFParser] Weighted clause line must have '
                     'more than 2 elements, at least [weight one_lit 0]')
 
             # Get and check weight
@@ -133,8 +127,9 @@ class WCNFParser:
             del values[0]
 
             if weight <= 0:
-                raise SyntaxError('[WCNFParser] Clause\'s weight must be '
-                                                        'greater than 0')
+                raise SyntaxError(
+                    '[WCNFParser] Clause\'s weight must be '
+                    'greater than 0')
 
             # If it is only weighted (without hard clauses) set top as the
             # sum of all the weights plus one
@@ -146,14 +141,15 @@ class WCNFParser:
 
         for lit in values:
             if lit == 0:
-                self.clauses.append( (weight, clause) )
+                self.clauses.append((weight, clause))
                 clause = None
             else:
                 clause.add(lit)
 
                 if lit < -self.num_vars or lit > self.num_vars:
-                    raise SyntaxError('[WCNFParser] Invalid literal %d, it must '
-                                'be in range +/-[1, %d].' % (lit, num_vars) )
+                    raise SyntaxError(
+                        '[WCNFParser] Invalid literal %d, it must '
+                        'be in range +/-[1, %d].' % (lit, self.num_vars))
 
         if clause:
             raise SyntaxError('Trailing 0 not found')
@@ -177,4 +173,3 @@ class WCNFParser:
     #
     def __isWCNF(self, line_values):
         return line_values[1].lower() == 'wcnf'
-

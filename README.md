@@ -25,7 +25,7 @@ and uses files to send and retrieve data. But the implementation should be possi
 a wrapper to call the solver's API directly.
 
 There are two restrictions for the solver interface implementations:
-  1. All the methods on the base class have to be overrided.
+  1. All the methods on the base class have to be overridden.
   2. The \__init\__ method can't expect arguments.
 
 <a name="importnote"/>
